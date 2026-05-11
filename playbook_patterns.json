@@ -1,0 +1,55 @@
+{
+  "top_winning_behaviors": [
+    {
+      "behavior": "Having a clear next step",
+      "insight": "Successful calls almost always establish concrete follow-up actions rather than leaving things vague.",
+      "booked_rate": "47 of 50 booked calls had clear next steps",
+      "evidence_stat": "94% of booked calls vs 55% of not booked calls"
+    },
+    {
+      "behavior": "Minimal objection handling required",
+      "insight": "The best calls flow smoothly without needing to overcome significant resistance from prospects.",
+      "booked_rate": "25 of 50 booked calls had no objections",
+      "evidence_stat": "50% of booked calls had zero objections vs 33% of not booked calls"
+    },
+    {
+      "behavior": "Following up on demo requests",
+      "insight": "Calling prospects who already expressed interest dramatically increases conversion rates.",
+      "booked_rate": "29 of 48 demo request followup calls booked",
+      "evidence_stat": "60% conversion rate vs 19% for other opening angles"
+    }
+  ],
+  "top_objections": [
+    {
+      "objection": "Pricing/cost concerns before demo",
+      "frequency": "Multiple variations in booked calls",
+      "best_response": "Acknowledge the concern but redirect to value demonstration in the demo",
+      "example_rep_behavior": "Still managed to book 3+ demos despite pricing objections"
+    },
+    {
+      "objection": "General not interested",
+      "frequency": "Most common in not booked calls",
+      "best_response": "Probe deeper to understand specific reasons rather than accepting surface-level dismissal",
+      "example_rep_behavior": "Successful reps rarely encounter this objection, suggesting better qualification"
+    },
+    {
+      "objection": "Timing/availability issues",
+      "frequency": "Common across both outcomes",
+      "best_response": "Offer flexible scheduling options and emphasize brief time commitment",
+      "example_rep_behavior": "Frame as working around their schedule rather than demanding specific times"
+    }
+  ],
+  "opening_angle_analysis": {
+    "best_angle": "demo_request_followup",
+    "insight": "Following up with prospects who already showed interest yields 60% conversion rate because intent is pre-established",
+    "worst_angle": "fee_savings",
+    "worst_insight": "Fee savings angle only converts 10% of the time, likely because it focuses on cost rather than value and attracts price-sensitive prospects"
+  },
+  "tenure_insight": "Experience doesn't appear to be the primary differentiator - mid-tenure reps actually have the best conversion rate at 33% (21/64), compared to senior reps at 38% (19/50) and new reps at 29% (10/35). This suggests that factors like call technique, opening angles, and territory quality may matter more than years of experience. The relatively similar performance across tenure levels indicates that the fundamentals can be learned quickly with proper training.",
+  "duration_insight": "Successful calls average 6.4 minutes compared to 3.9 minutes for unsuccessful ones, representing a 64% longer duration. This isn't about talking more - it's about having substantive conversations. The longer duration likely reflects prospects asking questions, engaging in discovery, and working through scheduling details. Rushed calls under 4 minutes don't allow enough time to build rapport, understand needs, or overcome minor hesitations that naturally arise when booking a demo.",
+  "three_things_we_didnt_know": [
+    "Social proof backfires - only 36% of booked calls used social proof vs 78% of failed calls, suggesting it may create skepticism or comparison shopping",
+    "Discovery questions aren't always necessary - only 58% of successful calls asked discovery questions, indicating that pre-qualified leads may not need extensive fact-finding",
+    "Strong objection handling still works - 7 calls with strong objections still booked demos, proving that persistence and skill can overcome significant resistance"
+  ]
+}
