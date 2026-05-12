@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 client = anthropic.Anthropic(api_key=os.getenv('ANTHROPIC_API_KEY'))
 
-calls = pd.read_csv('call_transcripts.csv')
+calls = pd.read_csv('data/call_transcripts.csv')
 calls.columns = [c.lower() for c in calls.columns]
 
 # ── STEP 1: ANALYZE EVERY CALL ──────────────────────────────
@@ -98,7 +98,7 @@ for i, row in calls.iterrows():
         print(f"  ✗ {row['call_id']} — ERROR: {e}")
 
 # Save raw results
-with open('call_analysis_raw.json', 'w') as f:
+with open('data/call_analysis_raw.json', 'w') as f:
     json.dump(results, f, indent=2)
 
 print(f"\nDone. {len(results)} calls analyzed, {len(errors)} errors.")
@@ -169,9 +169,9 @@ Based on this data, generate a playbook pattern analysis. Return ONLY valid JSON
     "tenure_insight": "one paragraph on what the tenure data actually shows — is experience the differentiator?",
     "duration_insight": "one paragraph on what call duration tells us about successful calls",
     "three_things_we_didnt_know": [
-        "surprising finding 1 with specific numbers",
-        "surprising finding 2 with specific numbers", 
-        "surprising finding 3 with specific numbers"
+        {{"title": "Short punchy title (4-7 words)", "detail": "One sentence with the specific numbers and why it's counterintuitive"}},
+        {{"title": "Short punchy title (4-7 words)", "detail": "One sentence with the specific numbers and why it's counterintuitive"}},
+        {{"title": "Short punchy title (4-7 words)", "detail": "One sentence with the specific numbers and why it's counterintuitive"}}
     ]
 }}"""
 
@@ -188,7 +188,7 @@ if raw.startswith("```"):
         raw = raw[4:]
 playbook_patterns = json.loads(raw.strip())
 
-with open('playbook_patterns.json', 'w') as f:
+with open('data/playbook_patterns.json', 'w') as f:
     json.dump(playbook_patterns, f, indent=2)
 
 print("Playbook patterns built.")
@@ -281,7 +281,7 @@ Return ONLY valid JSON:
     print(f"  ✓ {rep_id} | tenure: {tenure} | score: {avg_score:.1f} | conversion: {conversion_rate:.0%} | priority: {coaching.get('priority')}")
     time.sleep(0.3)
 
-with open('rep_profiles.json', 'w') as f:
+with open('data/rep_profiles.json', 'w') as f:
     json.dump(rep_profiles, f, indent=2)
 
 print(f"\nDone. {len(rep_profiles)} rep profiles built.")

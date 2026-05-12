@@ -1,0 +1,64 @@
+{
+  "top_winning_behaviors": [
+    {
+      "behavior": "Clear next step defined",
+      "insight": "Setting explicit next steps creates accountability and momentum that drives prospects to commit to demos",
+      "booked_rate": "47 of 50 booked calls had clear next steps",
+      "evidence_stat": "94% of booked calls vs 55% of not booked calls"
+    },
+    {
+      "behavior": "Longer call duration",
+      "insight": "Successful reps invest time to build rapport and understand needs rather than rushing to pitch",
+      "booked_rate": "Booked calls averaged 6.4 minutes",
+      "evidence_stat": "64% longer than not booked calls (3.9 min)"
+    },
+    {
+      "behavior": "Demo request followup opening",
+      "insight": "Following up with warm leads who already showed interest converts at the highest rate",
+      "booked_rate": "29 of 50 booked calls used this angle",
+      "evidence_stat": "58% of successful calls vs 19% of unsuccessful calls"
+    }
+  ],
+  "top_objections": [
+    {
+      "objection": "Pricing concerns before demo",
+      "frequency": "Appears in multiple forms across booked calls",
+      "best_response": "Acknowledge the concern but emphasize the demo will show ROI specific to their business",
+      "example_rep_behavior": "Still managed to book despite pricing pushback by focusing on value demonstration"
+    },
+    {
+      "objection": "Not interested/timing issues",
+      "frequency": "Most common in not booked calls",
+      "best_response": "Probe deeper into specific timing concerns rather than accepting surface-level rejection",
+      "example_rep_behavior": "Ask follow-up questions to uncover the real barriers"
+    },
+    {
+      "objection": "Too busy/capacity constraints",
+      "frequency": "Consistent across both call types",
+      "best_response": "Position the solution as something that reduces their workload rather than adds to it",
+      "example_rep_behavior": "Frame demo as time-saving rather than time-consuming"
+    }
+  ],
+  "opening_angle_analysis": {
+    "best_angle": "demo_request_followup",
+    "insight": "Warm followups with prospects who already expressed interest convert at the highest rate because intent is pre-established",
+    "worst_angle": "fee_savings",
+    "worst_insight": "Leading with cost savings creates price-focused conversations that commoditize the solution rather than building value"
+  },
+  "tenure_insight": "Experience isn't the primary differentiator - mid-tenure reps actually have the highest booking rate at 32.8% vs 28.6% for new reps and 38.0% for senior reps. This suggests there's a sweet spot where reps have enough experience to be confident but haven't become complacent, and that proper training and process adherence matter more than years of experience.",
+  "duration_insight": "Call duration is a leading indicator of success, with booked calls lasting 64% longer than unsuccessful ones. This isn't about talking more, but about investing time upfront to understand prospect needs, build rapport, and properly qualify opportunities. The extra 2.5 minutes allows reps to move beyond surface-level pitching into consultative selling that creates genuine interest in seeing a demo.",
+  "three_things_we_didnt_know": [
+    {
+      "title": "Social Proof Backfires Spectacularly",
+      "detail": "77 of 99 unsuccessful calls used social proof vs only 18 of 50 successful calls, suggesting generic testimonials actually hurt conversion when overused."
+    },
+    {
+      "title": "Discovery Questions Don't Drive Demos",
+      "detail": "66 of 99 unsuccessful calls asked discovery questions vs 29 of 50 successful calls, proving that questioning without purpose creates interrogation rather than connection."
+    },
+    {
+      "title": "No Objections Means Better Outcomes",
+      "detail": "Half of booked calls (25 of 50) had zero objections vs only 33% of unsuccessful calls, indicating strong qualification prevents resistance rather than creates it."
+    }
+  ]
+}

@@ -37,56 +37,52 @@ def show_rep_detail(calls, reps):
     trend_sign = "+" if trend >= 0 else ""
     trend_tone = "success" if trend >= 0 else "warning"
 
-    st.markdown(f"""
-    <div class="metric-grid-4">
-        <div class="metric-card">
-            <div class="metric-label">Behavior score</div>
-            <div class="metric-value">{rep.get('avg_behavior_score','')}</div>
-            <div class="metric-delta {trend_tone}">{trend_sign}{trend:.1f} vs baseline</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-label">Demos booked</div>
-            <div class="metric-value">{rep.get('demos_booked',0)}</div>
-            <div class="metric-sub">{rep.get('total_calls',0)} total calls</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-label">Conversion rate</div>
-            <div class="metric-value">{rep.get('conversion_rate',0):.0%}</div>
-        </div>
-        <div class="metric-card">
-            <div class="metric-label">Best call score</div>
-            <div class="metric-value">{rep.get('best_call_score','')}</div>
-            <div class="metric-sub" style="font-family:'JetBrains Mono',monospace;">{rep.get('best_call_id','')}</div>
-        </div>
-    </div>
-    """, unsafe_allow_html=True)
+    dc1, dc2, dc3, dc4 = st.columns(4)
+    with dc1:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Behavior score</div><div class="metric-value">{rep.get("avg_behavior_score","")}</div><div class="metric-delta {trend_tone}">{trend_sign}{trend:.1f} vs baseline</div></div>', unsafe_allow_html=True)
+    with dc2:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Demos booked</div><div class="metric-value">{rep.get("demos_booked",0)}</div><div class="metric-sub">{rep.get("total_calls",0)} total calls</div></div>', unsafe_allow_html=True)
+    with dc3:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Conversion rate</div><div class="metric-value">{rep.get("conversion_rate",0):.0%}</div></div>', unsafe_allow_html=True)
+    with dc4:
+        st.markdown(f"""<div class="metric-card"><div class="metric-label">Best call score</div><div class="metric-value">{rep.get('best_call_score','')}</div><div class="metric-sub" style="font-family:'JetBrains Mono',monospace;">{rep.get('best_call_id','')}</div></div>""", unsafe_allow_html=True)
+
+    st.markdown('<div style="height:24px"></div>', unsafe_allow_html=True)
 
     # Coach cards
-    st.markdown(f"""
-    <div class="coach-grid">
-        <div class="coach-card success">
+    cc1, cc2, cc3 = st.columns(3, gap="medium")
+    with cc1:
+        st.markdown(f"""
+        <div class="coach-card" style="background:rgba(26,107,60,0.06);border-color:rgba(26,107,60,0.25);">
             <div class="coach-card-header">
                 <span class="coach-card-icon success">↑</span>
                 <span class="coach-card-label">Strength</span>
             </div>
             <div class="coach-card-body">{rep.get('strength','')}</div>
         </div>
-        <div class="coach-card warning">
+        """, unsafe_allow_html=True)
+    with cc2:
+        st.markdown(f"""
+        <div class="coach-card" style="background:rgba(176,120,0,0.06);border-color:rgba(176,120,0,0.3);">
             <div class="coach-card-header">
                 <span class="coach-card-icon warning">⊙</span>
                 <span class="coach-card-label">Single biggest gap</span>
             </div>
             <div class="coach-card-body">{rep.get('gap','')}</div>
         </div>
-        <div class="coach-card primary">
+        """, unsafe_allow_html=True)
+    with cc3:
+        st.markdown(f"""
+        <div class="coach-card" style="background:rgba(10,15,13,0.03);border-color:rgba(10,15,13,0.1);">
             <div class="coach-card-header">
                 <span class="coach-card-icon primary">✦</span>
                 <span class="coach-card-label">Coaching recommendation</span>
             </div>
             <div class="coach-card-body">{rep.get('coaching_rec','')}</div>
         </div>
-    </div>
-    """, unsafe_allow_html=True)
+        """, unsafe_allow_html=True)
+
+    st.markdown('<div style="height:24px"></div>', unsafe_allow_html=True)
 
     # Call history
     st.markdown("""

@@ -1,38 +1,35 @@
 import streamlit as st
-import pandas as pd
-from data import get_team_metrics, get_objection_stats, get_action_banner
+import plotly.express as px
+from data import get_team_metrics, get_objection_stats, get_action_banner, get_opening_angle_stats
 
 
 def show_manager(calls, patterns, reps):
     m = get_team_metrics(calls, reps)
     banner = get_action_banner(calls, reps, patterns)
     objections = get_objection_stats(calls, patterns)
+    angle_stats = get_opening_angle_stats(calls)
 
     st.markdown("""
-    <div class="page-wrap">
-        <div class="page-header">
-            <div class="page-eyebrow">Manager view</div>
-            <div class="page-title">Team intelligence</div>
-            <div class="page-sub">Pre-computed nightly from {count} analyzed calls.</div>
-        </div>
-    """.replace("{count}", f"{m['calls_analyzed']:,}"), unsafe_allow_html=True)
+    <div class="mgr-header-marker">
+        <div class="page-title">Team intelligence</div>
+        <div class="page-sub">Patterns from every call, coaching priorities ranked by impact.</div>
+    </div>
+    """, unsafe_allow_html=True)
 
     tab1, tab2 = st.tabs(["Team dashboard", "Rep deep-dive"])
 
     with tab1:
-        _team_dashboard(calls, patterns, reps, m, banner, objections)
+        _team_dashboard(calls, patterns, reps, m, banner, objections, angle_stats)
 
     with tab2:
         _rep_grid(reps)
 
-    st.markdown("</div>", unsafe_allow_html=True)
 
-
-def _team_dashboard(calls, patterns, reps, m, banner, objections):
+def _team_dashboard(calls, patterns, reps, m, banner, objections, angle_stats):
     # Action banner
     if banner:
         st.markdown(f"""
-        <div class="action-banner">
+        <div class="action-banner">            
             <div class="banner-eyebrow">⚡ Highest-impact action this week</div>
             <div class="banner-headline">{banner['headline']}</div>
             <div class="banner-detail">{banner['detail']}</div>
@@ -42,17 +39,16 @@ def _team_dashboard(calls, patterns, reps, m, banner, objections):
             </div>
         </div>
         """, unsafe_allow_html=True)
+        st.markdown('<div style="height:16px"></div>', unsafe_allow_html=True)
 
-    # Metrics
-    mc1, mc2, mc3, mc4 = st.columns(4)
+    # Metrics — 3 cards (call count already in page subtitle)
+    mc1, mc2, mc3 = st.columns(3)
     with mc1:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Calls analyzed</div><div class="metric-value">{m["calls_analyzed"]:,}</div></div>', unsafe_allow_html=True)
-    with mc2:
         st.markdown(f'<div class="metric-card"><div class="metric-label">Demo conversion</div><div class="metric-value">{m["conversion_rate"]}%</div></div>', unsafe_allow_html=True)
+    with mc2:
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Avg behavior score<span class="metric-info" data-tooltip="Composite score (1–10) combining talk ratio, energy, discovery questions asked, objection handling, personalization, rapport, clear next step, and call energy. Higher = stronger rep behavior on this call.">ⓘ</span></div><div class="metric-value">{m["avg_behavior_score"]}</div></div>', unsafe_allow_html=True)
     with mc3:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Avg behavior score</div><div class="metric-value">{m["avg_behavior_score"]}</div><div class="metric-sub">composite, 1–10</div></div>', unsafe_allow_html=True)
-    with mc4:
-        st.markdown(f'<div class="metric-card"><div class="metric-label">Booked-call score</div><div class="metric-value">{m["booked_call_score"]}</div><div class="metric-sub">benchmark for coaching</div></div>', unsafe_allow_html=True)
+        st.markdown(f'<div class="metric-card"><div class="metric-label">Booked-call score<span class="metric-info" data-tooltip="Average behavior score across all calls that booked a demo. Used as the benchmark — coaching brings reps closer to this score.">ⓘ</span></div><div class="metric-value">{m["booked_call_score"]}</div></div>', unsafe_allow_html=True)
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -70,14 +66,16 @@ def _team_dashboard(calls, patterns, reps, m, banner, objections):
         f"Based on {m['real_calls']} real conversations",
         f"Based on {m['booked']} booked demos",
     ]
-    titles = [i.split("—")[0].strip() if "—" in i else i[:60] + "..." for i in insights]
-    details = [i.split("—")[1].strip() if "—" in i else i for i in insights]
 
     cols = st.columns(3)
     for i, (col, insight) in enumerate(zip(cols, insights)):
         with col:
-            title = titles[i] if i < len(titles) else f"Finding {i+1}"
-            detail = details[i] if i < len(details) else insight
+            if isinstance(insight, dict):
+                title = insight.get("title", f"Finding {i+1}")
+                detail = insight.get("detail", "")
+            else:
+                title = insight.split("—")[0].strip() if "—" in insight else insight[:60] + "..."
+                detail = insight.split("—")[1].strip() if "—" in insight else insight
             evidence = evidences[i] if i < len(evidences) else ""
             st.markdown(f"""
             <div class="insight-card">
@@ -103,162 +101,98 @@ def _team_dashboard(calls, patterns, reps, m, banner, objections):
 
         behaviors_html = '<div class="list-card">'
         for b in patterns.get("top_winning_behaviors", []):
+            behavior = b.get("behavior") or "—"
+            evidence = b.get("evidence_stat") or b.get("insight") or ""
+            booked_rate = b.get("booked_rate") or "—"
             behaviors_html += f"""
             <div class="list-card-row">
                 <div>
-                    <div class="list-row-main">{b.get('behavior','')}</div>
-                    <div class="list-row-sub">{b.get('evidence_stat','')}</div>
+                    <div class="list-row-main">{behavior}</div>
+                    <div class="list-row-sub">{evidence}</div>
                 </div>
-                <span class="lift-badge">{b.get('booked_rate','')}</span>
+                <span class="lift-badge">{booked_rate}</span>
             </div>"""
         behaviors_html += "</div>"
         st.markdown(behaviors_html, unsafe_allow_html=True)
 
-        st.markdown("<br>", unsafe_allow_html=True)
-
+    with col_right:
         # Opening angles
         st.markdown("""
         <div class="section-header">
             <div class="section-title">Opening angles</div>
-            <div class="section-sub">Best and worst performing openers.</div>
+            <div class="section-sub">Conversion rate by opener — 5+ calls, sorted by conversion.</div>
         </div>
         """, unsafe_allow_html=True)
 
-        angle = patterns.get("opening_angle_analysis", {})
-        angles_data = [
-            {"angle": angle.get("best_angle", ""), "rate": "Best", "note": angle.get("insight", ""), "good": True},
-            {"angle": angle.get("worst_angle", ""), "rate": "Underperforms", "note": angle.get("worst_insight", ""), "good": False},
-        ]
         angles_html = '<div class="list-card">'
-        for a in angles_data:
-            color_class = "good" if a["good"] else "bad"
+        for a in angle_stats:
+            conv = a["conversion_rate"]
+            if conv >= 35:
+                rate_color = "var(--success)"
+            elif conv >= 20:
+                rate_color = "var(--foreground)"
+            else:
+                rate_color = "var(--destructive)"
+            sub = f"{a['count']} calls"
+            if a["best_for"]:
+                sub += f" · best for {a['best_for']}"
             angles_html += f"""
             <div class="list-card-row">
                 <div>
-                    <div class="list-row-main">{a['angle']}</div>
-                    <div class="list-row-sub">{a['note'][:80]}...</div>
+                    <div class="list-row-main">{a['human_label']}</div>
+                    <div class="list-row-sub">{sub}</div>
                 </div>
-                <span class="conversion-value {color_class}">{a['rate']}</span>
+                <span style="font-family:'JetBrains Mono',monospace; font-size:16px; font-weight:700; color:{rate_color}; white-space:nowrap;">{conv}%</span>
             </div>"""
         angles_html += "</div>"
         st.markdown(angles_html, unsafe_allow_html=True)
 
-    with col_right:
-        # Objection map
-        st.markdown("""
-        <div class="section-header">
-            <div class="section-title">Objection map</div>
-            <div class="section-sub">Most common objections and the responses that work.</div>
-        </div>
-        """, unsafe_allow_html=True)
-
-        obj_html = """
-        <table class="obj-table">
-            <thead><tr>
-                <th>Objection</th>
-                <th>Best response</th>
-                <th class="right">Win w/</th>
-                <th class="right">Win w/o</th>
-            </tr></thead>
-            <tbody>"""
-
-        for obj in objections:
-            win_with = obj.get("win_rate_with", 0)
-            win_without = obj.get("win_rate_without", 0)
-            obj_html += f"""
-            <tr>
-                <td>
-                    <div class="obj-main">{obj.get('objection','')}</div>
-                    <div class="obj-freq">{obj.get('frequency','')}</div>
-                </td>
-                <td class="obj-response">"{obj.get('best_response','')}"</td>
-                <td class="right"><span class="win-rate good">{win_with}%</span></td>
-                <td class="right"><span class="win-rate bad">{win_without}%</span></td>
-            </tr>"""
-
-        obj_html += "</tbody></table>"
-        st.markdown(obj_html, unsafe_allow_html=True)
-
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        # Tenure insight
-        st.markdown("""
-        <div class="section-header">
-            <div class="section-title">Tenure insight</div>
-        </div>
-        """, unsafe_allow_html=True)
-        st.markdown(f"""
-        <div class="brief-section-card">
-            <div style="font-size:14px; color: var(--muted-foreground); line-height:1.6;">
-                {patterns.get('tenure_insight','')}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
     st.markdown("<br>", unsafe_allow_html=True)
 
-    # Coaching queue
+    # Objection map — full width
     st.markdown("""
     <div class="section-header">
-        <div class="section-title">Coaching queue</div>
-        <div class="section-sub">Sorted by impact, not alphabet. Click any rep to open their deep-dive.</div>
+        <div class="section-title">Objection map</div>
+        <div class="section-sub">Most common objections, top handler, and win rates by response quality.</div>
     </div>
     """, unsafe_allow_html=True)
 
-    sorted_reps = sorted(
-        reps,
-        key=lambda x: {"high": 0, "medium": 1, "low": 2}.get(x.get("priority", "medium"), 1)
-    )
+    obj_html = """
+    <table class="obj-table">
+        <thead><tr>
+            <th>Objection</th>
+            <th>Best response</th>
+            <th>Top rep</th>
+            <th class="right">Win rate</th>
+        </tr></thead>
+        <tbody>"""
 
-    st.markdown('<div class="coaching-queue">', unsafe_allow_html=True)
-    for rep in sorted_reps:
-        priority = rep.get("priority", "medium")
-        badge_class = f"badge-{priority}"
-        priority_icon = {"high": "⚠", "medium": "·", "low": "✓"}.get(priority, "·")
+    for obj in objections:
+        win_with = obj.get("win_rate_with", "—")
+        with_display = f"{win_with}%" if isinstance(win_with, int) else win_with
+        appearances = obj.get("total_appearances", 0)
+        freq_text = obj.get("frequency") or ""
+        freq_label = f"{freq_text} · {appearances} calls" if appearances else freq_text
+        best_response = obj.get("best_response") or obj.get("example_rep_behavior") or ""
+        top_rep = obj.get("top_rep", "—")
+        obj_html += f"""
+        <tr>
+            <td>
+                <div class="obj-main">{obj.get('objection','')}</div>
+                <div class="obj-freq">{freq_label}</div>
+            </td>
+            <td class="obj-response">"{best_response}"</td>
+            <td class="obj-rep">{top_rep}</td>
+            <td class="right"><span class="win-rate good">{with_display}</span></td>
+        </tr>"""
 
-        col1, col2, col3, col4 = st.columns([3, 5, 2, 1])
-        with col1:
-            st.markdown(f"""
-            <div style="padding: 12px 0 12px 20px;">
-                <span class="badge {badge_class}">{priority_icon} {priority}</span>
-                <div class="queue-rep-name" style="margin-top:6px;">{rep['rep_id']}</div>
-                <div class="queue-rep-meta">{rep.get('tenure','').title()} · {rep.get('total_calls',0)} calls</div>
-            </div>
-            """, unsafe_allow_html=True)
-        with col2:
-            st.markdown(f"""
-            <div style="padding: 12px 0; font-size: 13px; color: var(--muted-foreground); line-height: 1.5;">
-                {rep.get('gap','')}
-            </div>
-            """, unsafe_allow_html=True)
-        with col3:
-            st.markdown(f"""
-            <div style="padding: 12px 0; text-align: right;">
-                <div class="queue-score">{rep.get('avg_behavior_score','')}</div>
-                <div class="queue-score-label">behavior</div>
-            </div>
-            """, unsafe_allow_html=True)
-        with col4:
-            st.markdown("<div style='padding: 8px 20px 0 0;'>", unsafe_allow_html=True)
-            if st.button("→", key=f"queue_{rep['rep_id']}", help=f"Open {rep['rep_id']} deep-dive"):
-                st.session_state.selected_rep = rep["rep_id"]
-                st.session_state.view = "rep_detail"
-                st.rerun()
-            st.markdown("</div>", unsafe_allow_html=True)
-
-        st.markdown('<hr style="margin:0; border-color: var(--border);">', unsafe_allow_html=True)
-
-    st.markdown("</div>", unsafe_allow_html=True)
+    obj_html += "</tbody></table>"
+    st.markdown(obj_html, unsafe_allow_html=True)
 
 
-def _rep_grid(reps):
-    """Card grid of all reps — click to open deep-dive."""
-    st.markdown("""
-    <div class="rep-grid">
-    """, unsafe_allow_html=True)
-
+def _render_rep_cards(rep_list, key_prefix="grid"):
     cols = st.columns(3)
-    for i, rep in enumerate(sorted(reps, key=lambda x: {"high": 0, "medium": 1, "low": 2}.get(x.get("priority","medium"), 1))):
+    for i, rep in enumerate(rep_list):
         with cols[i % 3]:
             priority = rep.get("priority", "medium")
             badge_class = f"badge-{priority}"
@@ -288,9 +222,179 @@ def _rep_grid(reps):
                 <div class="rep-card-gap">{rep.get('gap','')}</div>
             </div>
             """, unsafe_allow_html=True)
-            if st.button(f"View deep-dive →", key=f"grid_{rep['rep_id']}", use_container_width=True):
+            if st.button("View deep-dive →", key=f"{key_prefix}_{rep['rep_id']}", use_container_width=True):
                 st.session_state.selected_rep = rep["rep_id"]
                 st.session_state.view = "rep_detail"
                 st.rerun()
 
-    st.markdown("</div>", unsafe_allow_html=True)
+
+def _rep_grid(reps):
+    search = st.text_input(
+        "Search reps",
+        placeholder="Search by rep ID, name, or tenure…",
+        label_visibility="collapsed",
+    )
+
+    # Filter chips
+    if "rep_filter" not in st.session_state:
+        st.session_state.rep_filter = "all"
+
+    chips = [
+        ("all", "All"),
+        ("high_priority", "High priority"),
+        ("new_tenure", "New tenure"),
+        ("low_conversion", "Low conversion"),
+    ]
+    chip_cols = st.columns(len(chips))
+    for col, (key, label) in zip(chip_cols, chips):
+        with col:
+            is_active = st.session_state.rep_filter == key
+            if st.button(label, key=f"chip_{key}", type="primary" if is_active else "secondary", use_container_width=True):
+                st.session_state.rep_filter = key
+                st.rerun()
+
+    active_filter = st.session_state.rep_filter
+
+    def _apply_filter(rep_list):
+        if active_filter == "high_priority":
+            return [r for r in rep_list if r.get("priority") == "high"]
+        elif active_filter == "new_tenure":
+            return [r for r in rep_list if r.get("tenure", "").lower() == "new"]
+        elif active_filter == "low_conversion":
+            return [r for r in rep_list if r.get("conversion_rate", 0) < 0.25]
+        return rep_list
+
+    # Apply search text first, then chip filter on top
+    working = list(reps)
+    if search:
+        q = search.lower()
+        working = [r for r in working if q in r["rep_id"].lower() or q in r.get("tenure", "").lower()]
+
+    # Non-"all" chip: show full filtered grid, hide curated sections
+    if active_filter != "all":
+        filtered = _apply_filter(working)
+        n = len(filtered)
+        st.caption(f"{n} rep{'s' if n != 1 else ''} match this filter")
+        _render_rep_cards(filtered, key_prefix="filtered")
+        return
+
+    # "All" chip + search active: show search results, skip curated sections
+    if search:
+        n = len(working)
+        st.caption(f"{n} rep{'s' if n != 1 else ''} found")
+        _render_rep_cards(working, key_prefix="search")
+        return
+
+    # Default view (All + no search): scatter → coach this week → top reps → view all
+
+    # Team performance scatter
+    st.markdown("""
+    <div class="section-header">
+        <div class="section-title">Team performance map</div>
+        <div class="section-sub">Dot size = total calls. Color = coaching priority.</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    scatter_rows = [
+        {
+            "Rep": r["rep_id"],
+            "Behavior Score": r.get("avg_behavior_score", 0),
+            "Conversion Rate (%)": round(r.get("conversion_rate", 0) * 100, 1),
+            "Total Calls": max(r.get("total_calls", 1), 1),
+            "Priority": r.get("priority", "medium"),
+            "Gap": r.get("gap", ""),
+        }
+        for r in reps
+    ]
+    fig = px.scatter(
+        scatter_rows,
+        x="Behavior Score",
+        y="Conversion Rate (%)",
+        size="Total Calls",
+        color="Priority",
+        color_discrete_map={"high": "#c53030", "medium": "#b07800", "low": "#1a6b3c"},
+        text="Rep",
+        hover_data={"Gap": True, "Behavior Score": True, "Conversion Rate (%)": True, "Total Calls": False, "Priority": False},
+        size_max=28,
+        category_orders={"Priority": ["high", "medium", "low"]},
+    )
+    fig.update_traces(textposition="top center", textfont_size=11)
+    fig.update_layout(
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        font_family="Inter, sans-serif",
+        xaxis=dict(range=[0, 10.5], title="Avg behavior score (0–10)", gridcolor="#e5edea", zeroline=False),
+        yaxis=dict(range=[0, 115], title="Conversion rate (%)", gridcolor="#e5edea", zeroline=False),
+        legend_title_text="Priority",
+        height=380,
+        margin=dict(l=40, r=40, t=20, b=40),
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    # Coach this week
+    high_priority = [r for r in reps if r.get("priority") == "high"]
+    coach_week = sorted(high_priority, key=lambda x: x.get("avg_behavior_score", 0))[:3]
+
+    if coach_week:
+        st.markdown("""
+        <div class="section-header">
+            <div class="section-title">Coach this week</div>
+            <div class="section-sub">High-priority reps ranked by lowest behavior score — biggest impact first.</div>
+        </div>
+        """, unsafe_allow_html=True)
+        coach_cols = st.columns(len(coach_week))
+        for col, rep in zip(coach_cols, coach_week):
+            with col:
+                st.markdown(f"""
+                <div class="perf-card warning">
+                    <div class="perf-card-name">{rep['rep_id']}</div>
+                    <div class="perf-card-stats">
+                        <span class="perf-stat">{rep.get('avg_behavior_score', '')} score</span>
+                        <span class="perf-stat">{rep.get('conversion_rate', 0):.0%} conv.</span>
+                    </div>
+                    <div class="perf-card-text">{rep.get('gap', '')}</div>
+                </div>
+                """, unsafe_allow_html=True)
+                st.markdown('<div style="height:8px"></div>', unsafe_allow_html=True)
+                if st.button("View →", key=f"coach_{rep['rep_id']}", use_container_width=True):
+                    st.session_state.selected_rep = rep["rep_id"]
+                    st.session_state.view = "rep_detail"
+                    st.rerun()
+        st.markdown("<br>", unsafe_allow_html=True)
+
+    # Top reps — clone their behavior
+    st.markdown("""
+    <div class="section-header">
+        <div class="section-title">Top reps — clone their behavior</div>
+        <div class="section-sub">Highest behavior score — at least 5 calls.</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    qualifying = [r for r in reps if r.get("total_calls", 0) >= 5]
+    top3 = sorted(qualifying, key=lambda x: x.get("avg_behavior_score", 0), reverse=True)[:3]
+    top_cols = st.columns(len(top3)) if top3 else st.columns(1)
+    for col, rep in zip(top_cols, top3):
+        with col:
+            st.markdown(f"""
+            <div class="perf-card success">
+                <div class="perf-card-name">{rep['rep_id']}</div>
+                <div class="perf-card-stats">
+                    <span class="perf-stat">{rep.get('avg_behavior_score', '')} score</span>
+                    <span class="perf-stat">{rep.get('conversion_rate', 0):.0%} conv.</span>
+                </div>
+                <div class="perf-card-text">{rep.get('strength', '')}</div>
+            </div>
+            """, unsafe_allow_html=True)
+            st.markdown('<div style="height:8px"></div>', unsafe_allow_html=True)
+            if st.button("View →", key=f"top_{rep['rep_id']}", use_container_width=True):
+                st.session_state.selected_rep = rep["rep_id"]
+                st.session_state.view = "rep_detail"
+                st.rerun()
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    with st.expander("View all reps", expanded=False):
+        sorted_reps = sorted(reps, key=lambda x: {"high": 0, "medium": 1, "low": 2}.get(x.get("priority", "medium"), 1))
+        _render_rep_cards(sorted_reps, key_prefix="all")

@@ -39,18 +39,37 @@ html, body, [class*="css"] {
     color: var(--foreground) !important;
     -webkit-font-smoothing: antialiased;
 }
+
+html, body { overflow-x: hidden !important; max-width: 100% !important; }
 h1, h2, h3, h4 { letter-spacing: -0.02em !important; }
 
-.main .block-container {
-    padding: 0 !important;
-    max-width: 100% !important;
+section[data-testid="stSidebar"] { display: none; }
+
+.main { padding: 0 !important; }
+
+.main .block-container,
+[data-testid="stMainBlockContainer"] {
+    padding: 2rem 3rem !important;
+    max-width: 1200px !important;
+    margin: 0 auto !important;
 }
 
-/* Page content wrapper — full width with side padding */
+.main .block-container > div:first-child {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+}
+
+section.main > div > div > div[data-testid="stVerticalBlock"],
+section[data-testid="stMain"] {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 0 !important;
+}
+
+/* Page content wrapper */
 .page-wrap {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 32px 40px;
+    padding: 32px 5%;
 }
 
 /* Nav row wrapper — empty marker div, collapse it */
@@ -60,7 +79,7 @@ h1, h2, h3, h4 { letter-spacing: -0.02em !important; }
 [data-testid="stMarkdownContainer"]:has(.nav-row-wrap) + [data-testid="stHorizontalBlock"] {
     background: var(--card) !important;
     border-bottom: 1px solid var(--border) !important;
-    padding: 8px 40px !important;
+    padding: 8px 5% !important;
     position: sticky !important;
     top: 0 !important;
     z-index: 100 !important;
@@ -157,6 +176,44 @@ h1, h2, h3, h4 { letter-spacing: -0.02em !important; }
 }
 .metric-sub { font-size: 12px; color: var(--muted-foreground); margin-top: 4px; }
 
+/* Metric info tooltip */
+.metric-info {
+    display: inline-block;
+    position: relative;
+    cursor: help;
+    font-size: 11px;
+    color: var(--muted-foreground);
+    opacity: 0.55;
+    margin-left: 5px;
+    vertical-align: middle;
+    line-height: 1;
+}
+.metric-info::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: calc(100% + 8px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1f1c;
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    padding: 8px 12px;
+    border-radius: 7px;
+    width: 250px;
+    z-index: 9999;
+    text-align: left;
+    line-height: 1.5;
+    white-space: normal;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.22);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+.metric-info:hover::after { opacity: 1; }
+
 .action-banner {
     background: var(--gradient-hero); color: var(--primary-foreground);
     border-radius: 14px; padding: 24px 28px; box-shadow: var(--shadow-elevated);
@@ -223,9 +280,11 @@ h1, h2, h3, h4 { letter-spacing: -0.02em !important; }
 .obj-main { font-weight: 500; }
 .obj-freq { font-size: 11px; color: var(--muted-foreground); margin-top: 2px; }
 .obj-response { color: var(--muted-foreground); font-style: italic; }
+.obj-rep { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--foreground); }
 .win-rate { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; }
 .win-rate.good { color: var(--success); }
 .win-rate.bad { color: var(--destructive); }
+.win-rate.neutral { color: var(--muted-foreground); }
 
 .badge {
     display: inline-flex; align-items: center; gap: 4px;
@@ -237,7 +296,7 @@ h1, h2, h3, h4 { letter-spacing: -0.02em !important; }
 .badge-medium { background: var(--warning-bg); color: var(--warning); }
 .badge-low { background: var(--secondary); color: var(--success); }
 
-.coach-card { border-radius: var(--radius); border: 1px solid; padding: 22px; height: 100%; }
+.coach-card { border-radius: var(--radius); border: 1px solid; padding: 22px; height: 100%; display: flex; flex-direction: column; }
 .coach-card.success { border-color: rgba(26,107,60,0.3); background: rgba(26,107,60,0.04); }
 .coach-card.warning { border-color: rgba(176,120,0,0.4); background: rgba(176,120,0,0.04); }
 .coach-card.primary { border-color: rgba(26,107,60,0.25); background: rgba(26,107,60,0.06); }
@@ -261,6 +320,49 @@ h1, h2, h3, h4 { letter-spacing: -0.02em !important; }
 .mini-stat-value { font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; }
 .mini-stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted-foreground); margin-top: 2px; }
 .rep-card-gap { font-size: 12px; color: var(--muted-foreground); line-height: 1.5; margin-bottom: 18px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Performance cards — top/bottom rep summaries on dashboard */
+.perf-card { border-radius: var(--radius); border: 1px solid; padding: 18px; height: 100%; display: flex; flex-direction: column; }
+.perf-card.success { border-color: rgba(26,107,60,0.3); background: rgba(26,107,60,0.04); }
+.perf-card.warning { border-color: rgba(176,120,0,0.4); background: rgba(176,120,0,0.04); }
+.perf-card-name { font-size: 15px; font-weight: 700; margin-bottom: 10px; }
+.perf-card-stats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+.perf-stat {
+    background: var(--secondary); color: var(--secondary-foreground);
+    border-radius: 999px; padding: 2px 10px;
+    font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600;
+}
+.perf-card-text { font-size: 13px; color: var(--muted-foreground); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Equal-height card rows — stretch columns to match tallest card */
+[data-testid="stHorizontalBlock"]:has(.perf-card),
+[data-testid="stHorizontalBlock"]:has(.coach-card) {
+    align-items: stretch !important;
+}
+[data-testid="stHorizontalBlock"]:has(.perf-card) > [data-testid="column"],
+[data-testid="stHorizontalBlock"]:has(.coach-card) > [data-testid="column"] {
+    display: flex !important;
+    flex-direction: column !important;
+}
+[data-testid="stHorizontalBlock"]:has(.perf-card) > [data-testid="column"] > div,
+[data-testid="stHorizontalBlock"]:has(.coach-card) > [data-testid="column"] > div {
+    flex: 1 !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+[data-testid="stHorizontalBlock"]:has(.perf-card) .perf-card,
+[data-testid="stHorizontalBlock"]:has(.coach-card) .coach-card {
+    flex: 1 !important;
+}
+
+/* Category cards — rep search empty state */
+.category-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow-card); margin-bottom: 12px;
+}
+.category-card-icon { font-size: 24px; margin-bottom: 12px; }
+.category-card-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; color: var(--foreground); }
+.category-card-body { font-size: 13px; color: var(--muted-foreground); line-height: 1.55; margin-bottom: 16px; }
 
 .restaurant-card {
     background: var(--card); border: 1px solid var(--border);
@@ -309,6 +411,30 @@ h1, h2, h3, h4 { letter-spacing: -0.02em !important; }
     border-bottom: 2px solid var(--primary) !important;
     background: transparent !important;
 }
+
+/* Manager page header bar — white strip between nav and tab content */
+[data-testid="stMarkdownContainer"]:has(.mgr-header-marker) {
+    background: var(--card) !important;
+    padding: 24px 5% 16px 5% !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+}
+[data-testid="stMarkdownContainer"]:has(.mgr-header-marker) + [data-testid="stTabs"] [data-baseweb="tab-list"] {
+    background: var(--card) !important;
+    padding-left: 5% !important;
+    padding-right: 5% !important;
+    box-shadow: 0 1px 3px rgba(10,15,13,0.06) !important;
+}
+
+/* Rep page header bar */
+[data-testid="stMarkdownContainer"]:has(.rep-header-marker) {
+    background: var(--card) !important;
+    padding: 24px 5% !important;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
 div.stButton > button {
     font-family: 'Inter', sans-serif !important; font-weight: 600 !important;
     border-radius: 8px !important; font-size: 14px !important;
@@ -339,7 +465,7 @@ def shell_header(active_view):
     col_logo, col_spacer, col_mgr, col_rep = st.columns([5, 4, 1.5, 1.5])
 
     with col_logo:
-        if st.button("✦  Owner AI  ·  Sales intelligence",
+        if st.button("✦  Owner Sales Intelligence",
                      key="logo_home",
                      type="secondary",
                      use_container_width=False):
@@ -348,14 +474,14 @@ def shell_header(active_view):
 
     with col_mgr:
         is_mgr = active_view in ["manager", "rep_detail"]
-        if st.button("Manager", key="nav_manager", use_container_width=True,
+        if st.button("Analyze", key="nav_manager", use_container_width=True,
                      type="primary" if is_mgr else "secondary"):
             st.session_state.view = "manager"
             st.rerun()
 
     with col_rep:
         is_rep = active_view in ["rep_search", "rep_brief"]
-        if st.button("Rep", key="nav_rep", use_container_width=True,
+        if st.button("Prep", key="nav_rep", use_container_width=True,
                      type="primary" if is_rep else "secondary"):
             st.session_state.view = "rep_search"
             st.rerun()

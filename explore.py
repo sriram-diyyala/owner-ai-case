@@ -2,8 +2,8 @@ import pandas as pd
 import json
 from collections import Counter
 
-calls = pd.read_csv('call_transcripts.csv')
-restaurants = pd.read_csv('restaurants.csv')
+calls = pd.read_csv('data/call_transcripts.csv')
+restaurants = pd.read_csv('data/restaurants.csv')
 
 calls.columns = [c.lower() for c in calls.columns]
 restaurants.columns = [c.lower() for c in restaurants.columns]

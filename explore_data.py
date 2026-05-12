@@ -1,6 +1,6 @@
 import pandas as pd
 
-calls = pd.read_csv('call_transcripts.csv')
+calls = pd.read_csv('data/call_transcripts.csv')
 calls.columns = [c.lower() for c in calls.columns]
 
 print("=" * 60)
