@@ -244,6 +244,9 @@ section[data-testid="stMain"] {
 }
 .insight-title { font-size: 16px; font-weight: 700; line-height: 1.3; margin-bottom: 10px; }
 .insight-detail { font-size: 14px; color: var(--muted-foreground); line-height: 1.55; margin-bottom: 10px; }
+.insight-lead {{ font-size: 14px; font-weight: 500; color: var(--foreground); line-height: 1.55; margin-bottom: 10px; }}
+.insight-bullets {{ font-size: 13px; color: var(--muted-foreground); line-height: 1.6; margin: 0 0 10px 0; padding-left: 16px; }}
+.insight-bullets li {{ margin-bottom: 6px; }}
 .insight-evidence { font-size: 12px; color: var(--muted-foreground); opacity: 0.75; font-family: 'JetBrains Mono', monospace; }
 
 .list-card {

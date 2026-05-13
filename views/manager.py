@@ -1,6 +1,40 @@
+import re
 import streamlit as st
 import plotly.express as px
 from data import get_team_metrics, get_objection_stats, get_action_banner, get_opening_angle_stats
+
+
+def to_third_person(text):
+    if not text:
+        return text
+    replacements = [
+        ("You're ", "Rep is "),
+        ("You are ", "Rep is "),
+        ("You consistently ", "Rep consistently "),
+        ("You excel ", "Rep excels "),
+        ("You repeatedly ", "Rep repeatedly "),
+        ("You struggle", "Rep struggles"),
+        ("You dominate", "Rep dominates"),
+        ("You jump", "Rep jumps"),
+        ("You fail", "Rep fails"),
+        ("You tend", "Rep tends"),
+        ("You often", "Rep often"),
+        ("You rarely", "Rep rarely"),
+        ("You always", "Rep always"),
+        ("You never", "Rep never"),
+        ("You miss", "Rep misses"),
+        ("You pitch", "Rep pitches"),
+        ("You ask", "Rep asks"),
+        ("You build", "Rep builds"),
+        ("You deliver", "Rep delivers"),
+        ("You handle", "Rep handles"),
+        ("Your ", "Their "),
+    ]
+    for second, third in replacements:
+        if text.startswith(second):
+            text = third + text[len(second):]
+            break
+    return text
 
 
 def show_manager(calls, patterns, reps):
@@ -77,11 +111,25 @@ def _team_dashboard(calls, patterns, reps, m, banner, objections, angle_stats):
                 title = insight.split("—")[0].strip() if "—" in insight else insight[:60] + "..."
                 detail = insight.split("—")[1].strip() if "—" in insight else insight
             evidence = evidences[i] if i < len(evidences) else ""
+            _parts = [p.strip() for p in re.split(r'\.\s+', detail.strip()) if p.strip()]
+            if len(_parts) > 1:
+                _first = _parts[0]
+                _bullets = [p for p in _parts[1:] if len(p) >= 20]
+                _bullet_items = "".join(
+                    f"<li>{p}.</li>" if not p.endswith(('.', '!', '?')) else f"<li>{p}</li>"
+                    for p in _bullets
+                )
+            else:
+                _first = detail.rstrip('.')
+                _bullet_items = ""
             st.markdown(f"""
             <div class="insight-card">
                 <div class="insight-eyebrow">↑ Insight</div>
                 <div class="insight-title">{title}</div>
-                <div class="insight-detail">{detail}</div>
+                <div class="insight-lead">{_first}.</div>
+                <ul class="insight-bullets">
+                    {_bullet_items}
+                </ul>
                 <div class="insight-evidence">{evidence}</div>
             </div>
             """, unsafe_allow_html=True)
@@ -219,7 +267,7 @@ def _render_rep_cards(rep_list, key_prefix="grid"):
                         <div class="mini-stat-label">Booked</div>
                     </div>
                 </div>
-                <div class="rep-card-gap">{rep.get('gap','')}</div>
+                <div class="rep-card-gap">{to_third_person(rep.get('gap',''))}</div>
             </div>
             """, unsafe_allow_html=True)
             if st.button("View deep-dive →", key=f"{key_prefix}_{rep['rep_id']}", use_container_width=True):
@@ -291,7 +339,7 @@ def _rep_grid(reps):
     st.markdown("""
     <div class="section-header">
         <div class="section-title">Team performance map</div>
-        <div class="section-sub">Dot size = total calls. Color = coaching priority.</div>
+        <div class="section-sub">Click any rep to open their coaching profile. Dot size = call volume.</div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -303,6 +351,7 @@ def _rep_grid(reps):
             "Total Calls": max(r.get("total_calls", 1), 1),
             "Priority": r.get("priority", "medium"),
             "Gap": r.get("gap", ""),
+            "Coaching Rec": r.get("coaching_rec", ""),
         }
         for r in reps
     ]
@@ -314,22 +363,60 @@ def _rep_grid(reps):
         color="Priority",
         color_discrete_map={"high": "#c53030", "medium": "#b07800", "low": "#1a6b3c"},
         text="Rep",
-        hover_data={"Gap": True, "Behavior Score": True, "Conversion Rate (%)": True, "Total Calls": False, "Priority": False},
-        size_max=28,
+        size_max=30,
         category_orders={"Priority": ["high", "medium", "low"]},
+        custom_data=["Gap", "Coaching Rec", "Rep"],
     )
-    fig.update_traces(textposition="top center", textfont_size=11)
+    fig.update_traces(
+        textposition="top center",
+        textfont_size=10,
+        hovertemplate="<b>%{customdata[2]}</b><br>Score: %{x} | Conv: %{y}%<extra></extra>",
+    )
+
+    fig.update_traces(marker=dict(line=dict(width=1, color="white")))
+
+    fig.add_shape(type="rect", x0=5.5, x1=8, y0=33, y1=115, fillcolor="rgba(26,107,60,0.05)", line_width=0, layer="below")
+    fig.add_shape(type="rect", x0=4, x1=5.5, y0=33, y1=115, fillcolor="rgba(176,120,0,0.05)", line_width=0, layer="below")
+    fig.add_shape(type="rect", x0=5.5, x1=8, y0=0, y1=33, fillcolor="rgba(59,130,246,0.05)", line_width=0, layer="below")
+    fig.add_shape(type="rect", x0=4, x1=5.5, y0=0, y1=33, fillcolor="rgba(197,48,48,0.05)", line_width=0, layer="below")
+
+    fig.add_shape(type="line", x0=5.5, x1=5.5, y0=0, y1=115, line=dict(color="#d4e4da", width=1, dash="dash"))
+    fig.add_shape(type="line", x0=4, x1=8, y0=33, y1=33, line=dict(color="#d4e4da", width=1, dash="dash"))
+
+    fig.add_annotation(x=7.8, y=108, text="✦ Clone", showarrow=False, font=dict(size=11, color="#1a6b3c"), opacity=0.7)
+    fig.add_annotation(x=4.3, y=108, text="⚠ Fragile", showarrow=False, font=dict(size=11, color="#b07800"), opacity=0.7)
+    fig.add_annotation(x=7.8, y=3, text="↑ Unlock", showarrow=False, font=dict(size=11, color="#3b82f6"), opacity=0.7)
+    fig.add_annotation(x=4.3, y=3, text="🎯 Coach now", showarrow=False, font=dict(size=11, color="#c53030"), opacity=0.7)
+
     fig.update_layout(
         plot_bgcolor="white",
         paper_bgcolor="white",
         font_family="Inter, sans-serif",
-        xaxis=dict(range=[0, 10.5], title="Avg behavior score (0–10)", gridcolor="#e5edea", zeroline=False),
-        yaxis=dict(range=[0, 115], title="Conversion rate (%)", gridcolor="#e5edea", zeroline=False),
-        legend_title_text="Priority",
-        height=380,
-        margin=dict(l=40, r=40, t=20, b=40),
+        xaxis=dict(range=[4, 8], title="Avg behavior score (0–10)", gridcolor="#e5edea", zeroline=False),
+        yaxis=dict(range=[-8, 115], title="Conversion rate (%)", gridcolor="#e5edea", zeroline=False),
+        height=520,
+        margin=dict(l=40, r=40, t=20, b=60),
+        showlegend=True,
+        legend=dict(
+            title="Coaching priority",
+            orientation="h",
+            yanchor="bottom",
+            y=1.02,
+            xanchor="right",
+            x=1,
+            font=dict(size=11),
+        ),
     )
-    st.plotly_chart(fig, use_container_width=True)
+
+    selected = st.plotly_chart(fig, use_container_width=True, on_select="rerun", key="team_scatter")
+    if selected and selected.get("selection", {}).get("points"):
+        point = selected["selection"]["points"][0]
+        rep_name = point.get("text") or scatter_rows[point["point_index"]]["Rep"]
+        st.session_state.selected_rep = rep_name
+        st.session_state.view = "rep_detail"
+        st.rerun()
+
+    st.caption("X axis: avg behavior score across all calls (composite of 7 signals). Y axis: demo conversion rate. Reference lines at team median behavior score (5.5) and team avg conversion (33%).")
 
     st.markdown("<br>", unsafe_allow_html=True)
 
@@ -354,7 +441,7 @@ def _rep_grid(reps):
                         <span class="perf-stat">{rep.get('avg_behavior_score', '')} score</span>
                         <span class="perf-stat">{rep.get('conversion_rate', 0):.0%} conv.</span>
                     </div>
-                    <div class="perf-card-text">{rep.get('gap', '')}</div>
+                    <div class="perf-card-text">{to_third_person(rep.get('gap', ''))}</div>
                 </div>
                 """, unsafe_allow_html=True)
                 st.markdown('<div style="height:8px"></div>', unsafe_allow_html=True)
@@ -384,7 +471,7 @@ def _rep_grid(reps):
                     <span class="perf-stat">{rep.get('avg_behavior_score', '')} score</span>
                     <span class="perf-stat">{rep.get('conversion_rate', 0):.0%} conv.</span>
                 </div>
-                <div class="perf-card-text">{rep.get('strength', '')}</div>
+                <div class="perf-card-text">{to_third_person(rep.get('strength', ''))}</div>
             </div>
             """, unsafe_allow_html=True)
             st.markdown('<div style="height:8px"></div>', unsafe_allow_html=True)

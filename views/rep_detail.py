@@ -2,6 +2,39 @@ import streamlit as st
 import pandas as pd
 
 
+def _to_third_person(text):
+    if not text:
+        return text
+    replacements = [
+        ("You're ", "Rep is "),
+        ("You are ", "Rep is "),
+        ("You consistently ", "Rep consistently "),
+        ("You excel ", "Rep excels "),
+        ("You repeatedly ", "Rep repeatedly "),
+        ("You struggle", "Rep struggles"),
+        ("You dominate", "Rep dominates"),
+        ("You jump", "Rep jumps"),
+        ("You fail", "Rep fails"),
+        ("You tend", "Rep tends"),
+        ("You often", "Rep often"),
+        ("You rarely", "Rep rarely"),
+        ("You always", "Rep always"),
+        ("You never", "Rep never"),
+        ("You miss", "Rep misses"),
+        ("You pitch", "Rep pitches"),
+        ("You ask", "Rep asks"),
+        ("You build", "Rep builds"),
+        ("You deliver", "Rep delivers"),
+        ("You handle", "Rep handles"),
+        ("Your ", "Their "),
+    ]
+    for second, third in replacements:
+        if text.startswith(second):
+            text = third + text[len(second):]
+            break
+    return text
+
+
 def show_rep_detail(calls, reps):
     rep_id = st.session_state.get("selected_rep")
     rep = next((r for r in reps if r["rep_id"] == rep_id), None)
@@ -58,7 +91,7 @@ def show_rep_detail(calls, reps):
                 <span class="coach-card-icon success">↑</span>
                 <span class="coach-card-label">Strength</span>
             </div>
-            <div class="coach-card-body">{rep.get('strength','')}</div>
+            <div class="coach-card-body">{_to_third_person(rep.get('strength',''))}</div>
         </div>
         """, unsafe_allow_html=True)
     with cc2:
@@ -68,7 +101,7 @@ def show_rep_detail(calls, reps):
                 <span class="coach-card-icon warning">⊙</span>
                 <span class="coach-card-label">Single biggest gap</span>
             </div>
-            <div class="coach-card-body">{rep.get('gap','')}</div>
+            <div class="coach-card-body">{_to_third_person(rep.get('gap',''))}</div>
         </div>
         """, unsafe_allow_html=True)
     with cc3:
@@ -78,7 +111,7 @@ def show_rep_detail(calls, reps):
                 <span class="coach-card-icon primary">✦</span>
                 <span class="coach-card-label">Coaching recommendation</span>
             </div>
-            <div class="coach-card-body">{rep.get('coaching_rec','')}</div>
+            <div class="coach-card-body">{_to_third_person(rep.get('coaching_rec',''))}</div>
         </div>
         """, unsafe_allow_html=True)
 
