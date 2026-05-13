@@ -27,89 +27,54 @@ def show_home(calls, patterns, reps, restaurants):
 
     st.markdown("""
     <style>
-    /* Position the row — overlap the hero from below */
-    [data-testid="stMarkdownContainer"]:has(.home-cards-marker) + [data-testid="stHorizontalBlock"] {
-        max-width: 1100px !important;
-        margin: -72px auto 0 auto !important;
-        gap: 24px !important;
-        padding: 0 5% !important;
-        position: relative !important;
-        z-index: 10 !important;
-        align-items: stretch !important;
+    div[data-testid="column"] div.stButton > button[kind="primary"] {
+        border-top-left-radius: 0 !important;
+        border-top-right-radius: 0 !important;
+        border-top: none !important;
+        margin-top: 0 !important;
     }
-
-    /* Both columns — white elevated cards, equal height */
-    [data-testid="stMarkdownContainer"]:has(.home-cards-marker) + [data-testid="stHorizontalBlock"] > [data-testid="column"] {
-        background: white !important;
-        border: 1px solid #d4e4da !important;
-        border-radius: 14px !important;
-        padding: 32px !important;
-        box-shadow: 0 20px 50px -12px rgba(10,15,13,0.25), 0 4px 12px rgba(10,15,13,0.08) !important;        
-        display: flex !important;
-        flex-direction: column !important;
-        box-sizing: border-box !important;
-    }
-
-    /* Inner block fills column so button sits at natural bottom */
-    [data-testid="stMarkdownContainer"]:has(.home-cards-marker) + [data-testid="stHorizontalBlock"] > [data-testid="column"] > div {
-        flex: 1 !important;
-        display: flex !important;
-        flex-direction: column !important;
-    }
-
-
-     /* Filled CTA buttons */
-    [data-testid="stMarkdownContainer"]:has(.home-cards-marker) + [data-testid="stHorizontalBlock"] div.stButton > button {
-    background: #1a6b3c !important;
-    border: 1px solid #1a6b3c !important;
-    color: white !important;
-    font-weight: 600 !important;
-    font-size: 14px !important;
-    padding: 10px 20px !important;
-    box-shadow: none !important;
-    width: 100% !important;
-    border-radius: 8px !important;
-    }
-    [data-testid="stMarkdownContainer"]:has(.home-cards-marker) + [data-testid="stHorizontalBlock"] div.stButton > button:hover {
-        background: #22883f !important;
-        border-color: #22883f !important;
-    }           
-
     </style>
-    <div class="home-cards-marker"></div>
     """, unsafe_allow_html=True)
 
-    col1, col2 = st.columns(2, gap="medium")
+    st.markdown('<div style="margin-top: -80px; position: relative; z-index: 10; padding: 0 4%;">', unsafe_allow_html=True)
+
+    col1, col2 = st.columns(2, gap="large")
 
     with col1:
-        st.markdown("""
-        <div style="display:inline-flex; align-items:center; gap:6px; background:#e8f5ed; color:#1a6b3c; border-radius:999px; padding:4px 12px; font-size:12px; font-weight:500; margin-bottom:20px;">
-            📊 I'm a manager
-        </div>
-        <div style="font-size:24px; font-weight:700; color:#0a0f0d; margin-bottom:12px; letter-spacing:-0.02em;">
-            Show me what I don't know.
-        </div>
-        <div style="font-size:14px; color:#5a6e63; line-height:1.6; margin-bottom:24px;">
-            Org-wide patterns, who to coach this week, the one gap that matters per rep — sorted by impact, not alphabet.
+        st.markdown(f"""
+        <div style="background:white; border:1.5px solid #d4e4da; border-radius:16px; border-bottom-left-radius:0; border-bottom-right-radius:0; border-bottom:none; padding:32px; box-shadow:0 8px 32px rgba(10,15,13,0.12); min-height:280px; margin-bottom:-14px;">
+            <div style="display:inline-flex; align-items:center; gap:6px; background:#e8f5ed; color:#1a6b3c; border-radius:999px; padding:4px 12px; font-size:12px; font-weight:500; margin-bottom:20px;">
+                📊 I'm a manager
+            </div>
+            <div style="font-size:24px; font-weight:700; color:#0a0f0d; margin-bottom:12px; letter-spacing:-0.02em;">
+                Show me what I don't know.
+            </div>
+            <div style="font-size:14px; color:#5a6e63; line-height:1.6; margin-bottom:28px;">
+                Org-wide patterns, who to coach this week, the one gap that matters per rep — sorted by impact, not alphabet.
+            </div>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Analyze team calls →", key="home_manager"):
+        if st.button("Analyze team calls →", key="home_manager", use_container_width=True, type="primary"):
             st.session_state.view = "manager"
             st.rerun()
 
     with col2:
         st.markdown(f"""
-        <div style="display:inline-flex; align-items:center; gap:6px; background:#e8f5ed; color:#1a6b3c; border-radius:999px; padding:4px 12px; font-size:12px; font-weight:500; margin-bottom:20px;">
-            📞 I'm a rep
-        </div>
-        <div style="font-size:24px; font-weight:700; color:#0a0f0d; margin-bottom:12px; letter-spacing:-0.02em;">
-            I have a call in 5. Get me ready.
-        </div>
-        <div style="font-size:14px; color:#5a6e63; line-height:1.6; margin-bottom:24px;">
-            Search the restaurant. Generate a one-page brief grounded in {len(calls)} analyzed calls. Gatekeeper opener, decision maker opener, top objections — ready in seconds.
+        <div style="background:white; border:1.5px solid #d4e4da; border-radius:16px; border-bottom-left-radius:0; border-bottom-right-radius:0; border-bottom:none; padding:32px; box-shadow:0 8px 32px rgba(10,15,13,0.12); min-height:280px; margin-bottom:-14px;">
+            <div style="display:inline-flex; align-items:center; gap:6px; background:#e8f5ed; color:#1a6b3c; border-radius:999px; padding:4px 12px; font-size:12px; font-weight:500; margin-bottom:20px;">
+                📞 I'm a rep
+            </div>
+            <div style="font-size:24px; font-weight:700; color:#0a0f0d; margin-bottom:12px; letter-spacing:-0.02em;">
+                I have a call in 5. Get me ready.
+            </div>
+            <div style="font-size:14px; color:#5a6e63; line-height:1.6; margin-bottom:28px;">
+                Search the restaurant. Generate a one-page brief grounded in {len(calls)} analyzed calls. Gatekeeper opener, decision maker opener, top objections — ready in seconds.
+            </div>
         </div>
         """, unsafe_allow_html=True)
-        if st.button("Prep for my next call →", key="home_rep"):
+        if st.button("Prep for my next call →", key="home_rep", use_container_width=True, type="primary"):
             st.session_state.view = "rep_search"
             st.rerun()
+
+    st.markdown('</div>', unsafe_allow_html=True)
 

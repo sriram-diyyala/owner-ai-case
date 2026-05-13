@@ -1,64 +1,129 @@
 {
   "top_winning_behaviors": [
     {
-      "behavior": "Clear next step defined",
-      "insight": "Setting explicit next steps creates accountability and momentum that drives prospects to commit to demos",
-      "booked_rate": "47 of 50 booked calls had clear next steps",
-      "evidence_stat": "94% of booked calls vs 55% of not booked calls"
+      "behavior": "Clear next step",
+      "insight": "Reps who establish a concrete next action (calendar invite, time commitment) book at 96% vs 59%, a +37pt delta\u2014this locks commitment and prevents ghosting.",
+      "booked_rate": "47 of 49 calls booked",
+      "evidence_stat": "9.6 score booked vs 5.9 not booked, +3.7 delta"
     },
     {
-      "behavior": "Longer call duration",
-      "insight": "Successful reps invest time to build rapport and understand needs rather than rushing to pitch",
-      "booked_rate": "Booked calls averaged 6.4 minutes",
-      "evidence_stat": "64% longer than not booked calls (3.9 min)"
+      "behavior": "Rapport building",
+      "insight": "Reps who invest in connection (humor, empathy, personal interest) score 6.9 vs 5.1, a +1.8 delta\u2014restaurant owners respond to relationship before product in trust-based industries.",
+      "booked_rate": "49 booked calls show higher rapport",
+      "evidence_stat": "6.9 rapport score booked vs 5.1 not booked"
     },
     {
-      "behavior": "Demo request followup opening",
-      "insight": "Following up with warm leads who already showed interest converts at the highest rate",
-      "booked_rate": "29 of 50 booked calls used this angle",
-      "evidence_stat": "58% of successful calls vs 19% of unsuccessful calls"
+      "behavior": "Objection handling depth",
+      "insight": "Reps who engage objections (acknowledge, reframe, offer proof) score 5.6 vs 4.6, a +1.0 delta\u2014overcoming resistance signals value and earns the demo slot.",
+      "booked_rate": "49 booked with better handling",
+      "evidence_stat": "5.6 objection handling score booked vs 4.6 not booked"
     }
   ],
   "top_objections": [
     {
-      "objection": "Pricing concerns before demo",
-      "frequency": "Appears in multiple forms across booked calls",
-      "best_response": "Acknowledge the concern but emphasize the demo will show ROI specific to their business",
-      "example_rep_behavior": "Still managed to book despite pricing pushback by focusing on value demonstration"
+      "objection": "Timing / too busy",
+      "frequency": "~18% of not-booked calls",
+      "best_response": "Acknowledge urgency, micro-commit to 15-min demo at specific future time, frame as 'quick audit' not sales call",
+      "example_rep_behavior": "Totally get it\u201415 minutes Thursday at 2pm to show you one thing that saves you $800/month, then you decide. Sound fair?"
     },
     {
-      "objection": "Not interested/timing issues",
-      "frequency": "Most common in not booked calls",
-      "best_response": "Probe deeper into specific timing concerns rather than accepting surface-level rejection",
-      "example_rep_behavior": "Ask follow-up questions to uncover the real barriers"
+      "objection": "Already using competitor",
+      "frequency": "~15% of not-booked calls",
+      "best_response": "Validate their choice, shift to 'supplement not replace' positioning, use social proof of restaurants using both",
+      "example_rep_behavior": "Love that you're on it\u2014most of our customers keep DoorDash for new customers but use us for repeat orders where margins matter. 15 min to see if it fits?"
     },
     {
-      "objection": "Too busy/capacity constraints",
-      "frequency": "Consistent across both call types",
-      "best_response": "Position the solution as something that reduces their workload rather than adds to it",
-      "example_rep_behavior": "Frame demo as time-saving rather than time-consuming"
+      "objection": "Not interested / talked before",
+      "frequency": "~12% of not-booked calls",
+      "best_response": "Ask what changed or didn't resonate, introduce new feature/proof point, reframe as 'update call' not cold pitch",
+      "example_rep_behavior": "Makes sense\u2014what wasn't a fit last time? We just added [feature], and three restaurants in [their area] are seeing [result]. Worth a fresh look?"
     }
   ],
   "opening_angle_analysis": {
     "best_angle": "demo_request_followup",
-    "insight": "Warm followups with prospects who already expressed interest convert at the highest rate because intent is pre-established",
-    "worst_angle": "fee_savings",
-    "worst_insight": "Leading with cost savings creates price-focused conversations that commoditize the solution rather than building value"
+    "best_angle_conversion": "63%",
+    "insight": "Following up on an inbound signal (even cold) creates implied permission and reciprocity\u2014owner feels they initiated, reducing cold-call resistance and triggering consistency bias.",
+    "worst_angle": "online_ordering",
+    "worst_angle_conversion": "9%",
+    "worst_insight": "Generic product-first pitch signals 'vendor spam'\u2014owners hear this daily from 10+ platforms, triggers automatic rejection before value is established."
   },
-  "tenure_insight": "Experience isn't the primary differentiator - mid-tenure reps actually have the highest booking rate at 32.8% vs 28.6% for new reps and 38.0% for senior reps. This suggests there's a sweet spot where reps have enough experience to be confident but haven't become complacent, and that proper training and process adherence matter more than years of experience.",
-  "duration_insight": "Call duration is a leading indicator of success, with booked calls lasting 64% longer than unsuccessful ones. This isn't about talking more, but about investing time upfront to understand prospect needs, build rapport, and properly qualify opportunities. The extra 2.5 minutes allows reps to move beyond surface-level pitching into consultative selling that creates genuine interest in seeing a demo.",
+  "tenure_insight": "Mid-tenure reps book 32% (20/63), new reps 29% (10/35), senior reps 39% (19/49). Senior reps show a +7-10pt edge, but the delta doesn't meet the 15pt significance bar with this sample size. The pattern suggests experience helps but isn't determinative\u2014likely because restaurant calling rewards empathy and hustle over complex enterprise sales skills. More data needed to confirm if senior reps' advantage scales or if mid/new reps can match performance with better scripts and coaching on rapport + next-step clarity.",
+  "duration_insight": "Booked calls average 6.5 minutes vs 3.9 for not-booked\u2014a 2.6-minute delta. This likely reflects both causality directions: (1) interested owners stay on the line longer, AND (2) reps who invest time in discovery, rapport, and objection handling create interest. The 3.9-minute not-booked average suggests reps are getting past gatekeepers and into conversations, but failing to hook the owner in the first 90 seconds. Implication: coach reps to frontload value and social proof in the first 60 seconds, then earn the next 3-5 minutes for discovery and close.",
   "three_things_we_didnt_know": [
     {
-      "title": "Social Proof Backfires Spectacularly",
-      "detail": "77 of 99 unsuccessful calls used social proof vs only 18 of 50 successful calls, suggesting generic testimonials actually hurt conversion when overused."
+      "title": "Demo Followup Beats Product Pitches 7:1",
+      "detail": "Demo_request_followup converts at 63% (31/49 booked) vs online_ordering at 9% (2/22) and fee_savings at 15% (4/26)\u2014a 48-54pt gap. Mechanism: framing the call as a followup (even if cold) triggers reciprocity and lowers defenses, while product-first pitches signal spam. Reps should open every call with 'following up on your interest in\u2026' or 'saw you checked out our site' to manufacture permission. Managers: rewrite all cold scripts to mimic warm followup language."
     },
     {
-      "title": "Discovery Questions Don't Drive Demos",
-      "detail": "66 of 99 unsuccessful calls asked discovery questions vs 29 of 50 successful calls, proving that questioning without purpose creates interrogation rather than connection."
+      "title": "Talk Ratio Is the Team's Systemic Blind Spot",
+      "detail": "talk_ratio_score is the weakest signal for 8 of 15 reps — more than any other behavior. Booked calls average a 7.1 talk ratio score vs 5.9 for not-booked calls, a 1.2 point delta. This isn't a rep-by-rep coaching problem — it's a systemic habit the whole team has developed. Reps are pitching when they should be listening. The fix is structural: add a talk ratio tracker to the weekly coaching cadence and set a team target of 40-55% rep talking per call."
     },
     {
-      "title": "No Objections Means Better Outcomes",
-      "detail": "Half of booked calls (25 of 50) had zero objections vs only 33% of unsuccessful calls, indicating strong qualification prevents resistance rather than creates it."
+      "title": "61% Not-Booked Show Followup Interest\u2014Auto-Sequence",
+      "detail": "60 of 98 not-booked calls (61%) showed followup interest signals but didn't convert on first call. Current process loses them. High-behavior not-booked (22 calls, score \u22657) cite timing, existing vendor satisfaction, or setup chaos\u2014not product rejection. Implication: build automated 3-5 touch email/SMS sequence for 'interested but not now' bucket. Sales ops should tag these leads for 30/60/90-day re-engagement, capturing 15-25 incremental demos/quarter without additional dial volume."
     }
-  ]
+  ],
+  "segment_angle_insights": [
+    {
+      "cuisine": "Indian",
+      "best_angle": "demo_request_followup",
+      "conversion_rate": "80%",
+      "insight": "Indian restaurants convert at 4x overall rate (80% vs 20% baseline)\u2014likely newer to direct ordering tech, less vendor fatigue, higher trust in relationship-first outreach."
+    },
+    {
+      "cuisine": "Southern",
+      "best_angle": "demo_request_followup",
+      "conversion_rate": "100%",
+      "insight": "Small sample (3 calls) but perfect conversion\u2014Southern owners may value personal outreach and local business storytelling; test fee_savings angle next to confirm."
+    },
+    {
+      "cuisine": "Mexican",
+      "best_angle": "demo_request_followup",
+      "conversion_rate": "75%",
+      "insight": "Demo followup works (6/8 booked) but fee_savings underperforms (33%, 2/6)\u2014suggests Mexican owners respond to relationship-building over ROI pitches; avoid leading with cost savings."
+    },
+    {
+      "cuisine": "American",
+      "best_angle": "fee_savings or google_ranking",
+      "conversion_rate": "50%",
+      "insight": "American cuisine shows balanced response to multiple angles (50% for fee/Google, 62% demo followup)\u2014most versatile segment, test all angles to optimize rep flexibility."
+    },
+    {
+      "cuisine": "Italian",
+      "best_angle": "google_ranking",
+      "conversion_rate": "25%",
+      "insight": "Italian drastically underperforms across all angles (11-25%)\u2014possible ICP mismatch, higher tech saturation, or stronger existing vendor relationships; consider deprioritizing or testing Spanish-language reps."
+    }
+  ],
+  "high_behavior_not_booked": {
+    "count": "22",
+    "pattern": "These calls show high rapport, discovery, and objection handling (score \u22657) but cite timing, vendor satisfaction, or operational chaos ('we just signed with X', 'in the middle of buyout', 'need to set up other things first')\u2014not product rejection.",
+    "gtm_implication": "This is a timing/sequencing problem, not product-market fit. 22 high-quality conversations lost to pipeline leakage. GTM should build a 'high-intent nurture' track\u2014tag these leads for automated 60-day re-engagement when timing improves. Sales ops: create CRM status 'Good Fit\u2014Bad Timing' to preserve context and trigger future outreach."
+  },
+  "follow_up_opportunity": {
+    "count": "60",
+    "pct_of_not_booked": "61%",
+    "implication": "61% of not-booked calls showed interest signals but didn't convert immediately\u2014this is 60 qualified leads/147 calls (41% of total volume) leaking from pipeline. A 3-5 touch email/SMS sequence ('Hey [Owner], still thinking about cutting DoorDash fees? Here's a 2-min video...') could recapture 15-20% (9-12 demos), adding 18-24% to monthly bookings without increasing dial volume. Sales ops should auto-enroll these contacts and track conversion to prove ROI of nurture infrastructure."
+  },
+  "behavior_score_methodology": {
+    "description": "Composite of 7 signals. Weights = domain knowledge; calibrate via regression at 1000+ calls.",
+    "signals": {
+      "reached_dm": 0.15,
+      "asked_discovery": 0.2,
+      "objection_handling": 0.2,
+      "clear_next_step": 0.15,
+      "talk_ratio_score": 0.1,
+      "personalization": 0.1,
+      "rapport_building": 0.1
+    },
+    "scoring_notes": {
+      "talk_ratio": "Optimal 40-55% rep talking. Outside 25-75% = score 1.",
+      "asked_discovery": "Binary + quality: +1.5pts per question, max 10.",
+      "objection_handling": "strong=10, moderate=6, weak=2, none=5.",
+      "reached_dm": "Binary prerequisite.",
+      "clear_next_step": "Binary explicit ask.",
+      "personalization": "high=10, medium=6, low=2.",
+      "rapport_building": "strong=10, moderate=6, weak=2."
+    }
+  }
 }
