@@ -79,15 +79,6 @@ The JSON files in `data/` are already generated and committed. You only need to 
 # Run the full pipeline (all 3 steps — ~15 min, ~$1.50)
 python3 build_playbook.py
 
-# Re-run only the pattern detection (Step 2 — ~30 sec, ~$0.10)
-# Edit build_playbook.py: set SKIP_STEP_1 = True, SKIP_STEP_3 = True
-python3 build_playbook.py
-
-# Re-run only rep profiles (Step 3 — ~2 min, ~$0.20)
-# Edit build_playbook.py: set SKIP_STEP_1 = True, SKIP_STEP_2 = True
-python3 build_playbook.py
-```
-
 ---
 
 ## Behavior Score Methodology
