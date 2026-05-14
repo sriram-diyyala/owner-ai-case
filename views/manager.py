@@ -66,7 +66,7 @@ def _team_dashboard(calls, patterns, reps, m, banner, objections, angle_stats):
         <div class="action-banner">            
             <div class="banner-eyebrow">⚡ Highest-impact action this week</div>
             <div class="banner-headline">{banner['headline']}</div>
-            <div class="banner-detail">{banner['detail']}</div>
+            <div class="banner-detail" style="max-width:100%;">{banner['detail']}</div>
             <div class="banner-pills">
                 <span class="banner-pill">{banner['reps_impacted']} reps impacted</span>
                 <span class="banner-pill">Est. {banner['estimated_lift']}</span>
@@ -110,27 +110,26 @@ def _team_dashboard(calls, patterns, reps, m, banner, objections, angle_stats):
             else:
                 title = insight.split("—")[0].strip() if "—" in insight else insight[:60] + "..."
                 detail = insight.split("—")[1].strip() if "—" in insight else insight
-            evidence = evidences[i] if i < len(evidences) else ""
             _parts = [p.strip() for p in re.split(r'\.\s+', detail.strip()) if p.strip()]
-            if len(_parts) > 1:
-                _first = _parts[0]
-                _bullets = [p for p in _parts[1:] if len(p) >= 20]
-                _bullet_items = "".join(
-                    f"<li>{p}.</li>" if not p.endswith(('.', '!', '?')) else f"<li>{p}</li>"
-                    for p in _bullets
-                )
+            _normed = [p if p.endswith(('.', '!', '?')) else p + '.' for p in _parts]
+            if len(_normed) >= 3:
+                _header = " ".join(_normed[:2])
+                _bullet_parts = _normed[2:5]
+            elif len(_normed) == 2:
+                _header = _normed[0]
+                _bullet_parts = [_normed[1]]
             else:
-                _first = detail.rstrip('.')
-                _bullet_items = ""
+                _header = detail
+                _bullet_parts = []
+            _bullet_items = "".join(f"<li>{b}</li>" for b in _bullet_parts)
             st.markdown(f"""
             <div class="insight-card">
                 <div class="insight-eyebrow">↑ Insight</div>
                 <div class="insight-title">{title}</div>
-                <div class="insight-lead">{_first}.</div>
+                <div class="insight-lead">{_header}</div>
                 <ul class="insight-bullets">
                     {_bullet_items}
                 </ul>
-                <div class="insight-evidence">{evidence}</div>
             </div>
             """, unsafe_allow_html=True)
 

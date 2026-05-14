@@ -168,8 +168,10 @@ def _new_restaurant_form(restaurants):
     business_options = ["full_service", "quick_service", "cafe", "bakery", "other"]
 
     prefill_name = st.session_state.pop("new_restaurant_name", "")
+    if prefill_name:
+        st.session_state["_nrf_name"] = prefill_name
     with st.form("new_restaurant_form"):
-        name = st.text_input("Restaurant name *", value=prefill_name)
+        name = st.text_input("Restaurant name *", key="_nrf_name")
         col_city, col_state = st.columns([3, 1])
         with col_city:
             city = st.text_input("City *")

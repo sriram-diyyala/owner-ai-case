@@ -225,7 +225,7 @@ section[data-testid="stMain"] {
 }
 .banner-icon { background: rgba(255,255,255,0.15); border-radius: 6px; padding: 4px 6px; font-size: 12px; }
 .banner-headline { font-size: 22px; font-weight: 700; margin-bottom: 10px; letter-spacing: -0.02em; }
-.banner-detail { font-size: 14px; opacity: 0.85; line-height: 1.55; margin-bottom: 18px; max-width: 720px; }
+.banner-detail { font-size: 14px; opacity: 0.85; line-height: 1.55; margin-bottom: 18px; max-width: 100%; }
 .banner-pills { display: flex; gap: 10px; flex-wrap: wrap; }
 .banner-pill {
     border: 1px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.12);
@@ -245,8 +245,8 @@ section[data-testid="stMain"] {
 .insight-title { font-size: 16px; font-weight: 700; line-height: 1.3; margin-bottom: 10px; }
 .insight-detail { font-size: 14px; color: var(--muted-foreground); line-height: 1.55; margin-bottom: 10px; }
 .insight-lead {{ font-size: 14px; font-weight: 500; color: var(--foreground); line-height: 1.55; margin-bottom: 10px; }}
-.insight-bullets {{ font-size: 13px; color: var(--muted-foreground); line-height: 1.6; margin: 0 0 10px 0; padding-left: 16px; }}
-.insight-bullets li {{ margin-bottom: 6px; }}
+.insight-bullets {{ font-size: 13px; color: var(--muted-foreground); line-height: 1.6; margin: 0 0 4px 0; padding-left: 18px; }}
+.insight-bullets li {{ margin-bottom: 5px; }}
 .insight-evidence { font-size: 12px; color: var(--muted-foreground); opacity: 0.75; font-family: 'JetBrains Mono', monospace; }
 
 .list-card {
