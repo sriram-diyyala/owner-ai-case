@@ -78,6 +78,7 @@ The JSON files in `data/` are already generated and committed. You only need to 
 ```bash
 # Run the full pipeline (all 3 steps — ~15 min, ~$1.50)
 python3 build_playbook.py
+```
 
 ---
 
