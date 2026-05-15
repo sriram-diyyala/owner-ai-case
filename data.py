@@ -101,6 +101,61 @@ def get_objection_stats(calls, patterns):
     return enriched
 
 
+def get_warm_pipeline(calls, restaurants_df):
+    real = [c for c in calls if c.get("call_type") not in ["auto_attendant", "voicemail"]]
+    not_booked = [c for c in real if c.get("call_outcome") == "not_booked"]
+    warm = [c for c in not_booked if c.get("follow_up_indicators") is True]
+
+    rest_calls: dict = defaultdict(list)
+    for c in warm:
+        key = f"{c.get('cuisine_type','')}_{c.get('restaurant_type','')}_{c.get('rep_id','')}"
+        rest_calls[key].append(c)
+
+    rows = []
+    seen_call_ids: set = set()
+    for key, call_list in rest_calls.items():
+        best = max(call_list, key=lambda x: x.get("behavior_score", 0))
+        if best["call_id"] in seen_call_ids:
+            continue
+        seen_call_ids.add(best["call_id"])
+        cuisine_val = best.get("cuisine_type", "unknown")
+        rest_type_val = best.get("restaurant_type", "unknown")
+        both = restaurants_df[
+            (restaurants_df["cuisine_type"] == cuisine_val) &
+            (restaurants_df["business_type"] == rest_type_val)
+        ]
+        match = both.iloc[0] if len(both) > 0 else (
+            restaurants_df[restaurants_df["cuisine_type"] == cuisine_val].iloc[0]
+            if len(restaurants_df[restaurants_df["cuisine_type"] == cuisine_val]) > 0
+            else None
+        )
+        restaurant_name = match["name"] if match is not None else f"{cuisine_val.replace('_', ' ').title()} Restaurant"
+        city = match["city"] if match is not None else ""
+        state = match["state"] if match is not None else "FL"
+        website_url = match["website_url"] if match is not None and pd.notna(match["website_url"]) else ""
+        num_locations = int(match["num_locations"]) if match is not None and pd.notna(match["num_locations"]) else 1
+        rows.append({
+            "call_id": best["call_id"],
+            "rep_id": best.get("rep_id", ""),
+            "restaurant_name": restaurant_name,
+            "cuisine_type": cuisine_val,
+            "restaurant_type": rest_type_val,
+            "city": city,
+            "state": state,
+            "website_url": website_url,
+            "num_locations": num_locations,
+            "behavior_score": best.get("behavior_score", 0),
+            "objections": best.get("objections_raised", []),
+            "summary": best.get("summary", ""),
+            "follow_up_note": best.get("next_step_detail") or best.get("coaching_moment") or "",
+            "call_outcome": best.get("call_outcome", ""),
+            "prior_calls": call_list,
+        })
+
+    rows.sort(key=lambda x: x["behavior_score"], reverse=True)
+    return rows[:20]
+
+
 _ANGLE_LABELS = {
     "demo_request_followup": "Demo request follow-up",
     "fee_savings": "Recover DoorDash commission",
